@@ -1,0 +1,1 @@
+/bin/cc  -g    CMakeFiles/untitled2.dir/main.c.o  -o untitled2 -rdynamic 
