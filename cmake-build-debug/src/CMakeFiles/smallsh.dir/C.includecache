@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/smallsh.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+
+/tmp/tmp.Qc37TVSWJl/src/smallsh.c
+smallsh.h
+/tmp/tmp.Qc37TVSWJl/src/smallsh.h
+

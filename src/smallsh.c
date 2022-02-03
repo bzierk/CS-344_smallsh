@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define MAX_CHAR_LEN 2048
-#define MAX_ARGS 512
+#include "smallsh.h"
 
 // A struct to hold commands, args, special symbols, and file names parsed from a user's input
 struct new_command {
-    char *cmd;
+    int argc;
+    char **argv;
     char *stdin;
     char *stdout;
     int in_redir;
@@ -20,13 +16,15 @@ struct new_command {
  * @param line
  * @return a populated new_command struct
  */
-struct new_command *parse_line(char *line) {
+void parse_line(char *line) {
+    struct new_command *cmd = malloc(sizeof(struct new_command));
     int i = 0;
     char *words[MAX_ARGS];
 
     // Initiate an array which can contain a maximum of 512 args, using strtok with a delimiter of " ", parse the input
     // line and store each token in the array.
-    char *token = strtok(line, " ");
+    char *strip_newline_token = strtok(line, "\n");
+    char *token = strtok(strip_newline_token, " ");
     while (token != NULL) {
         words[i] = calloc(strlen(token) + 1, sizeof(char));
         strcpy(words[i], token);
@@ -34,14 +32,30 @@ struct new_command *parse_line(char *line) {
         token = strtok(NULL, " ");
     }
 
+    // Check the last element in the array of tokens for an ampersand. If the last element is an ampersand, set the
+    // background process flag so we know to execute this command in the background.
+    if (strcmp(words[i - 1], "&") == 0) {
+        cmd->bg_proc = 1;
+    } else {
+        cmd->bg_proc = 0;
+    }
+
+    printf("bc: %d", cmd->bg_proc);
+    // Store the number of arguments
+    cmd->argc = i;
+
+    // Initialize argv to hold "argc" number of pointers. Each of these pointers will be used to hold an inidividual
+    // argument in the argv array
+    cmd->argv = malloc(cmd->argc * sizeof(char *));
+
     // Iterate through the array and generate the command struct. Words can be stored in the args array, if the special
     // characters "<", ">", or "&" are present, the corresponding flag in the struct will be set to "1".
-    for (int j = 0; j < MAX_ARGS; j++) {
-
+    for (int j = 0; j < i; j++) {
+        printf("%s,", words[j]);
+        fflush(stdout);
     }
 
     // Return a pointer to the struct which can be used to execute the command
-
 }
 
 /**
@@ -77,9 +91,11 @@ void run_shell(void) {
         currLine = get_line();
         printf("You entered: %s\n", currLine);
         fflush(stdout);
-        struct new_command *cmd = parse_line(currLine);
+//        struct new_command *cmd = parse_line(currLine);
+        parse_line(currLine);
 
-        running = execute_command(cmd);
+//        running = execute_command(cmd);
+        exit(EXIT_SUCCESS);
     }
 
     exit(EXIT_SUCCESS);

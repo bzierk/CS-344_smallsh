@@ -34,6 +34,7 @@
          <Option type="1" />
          <Option compiler="gcc" />
          <Compiler>
+            <Add directory="/tmp/tmp.Qc37TVSWJl/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include" />
             <Add directory="/usr/local/include" />
@@ -52,6 +53,7 @@
          <Option type="1" />
          <Option compiler="gcc" />
          <Compiler>
+            <Add directory="/tmp/tmp.Qc37TVSWJl/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include" />
             <Add directory="/usr/local/include" />
