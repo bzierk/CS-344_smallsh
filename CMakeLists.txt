@@ -3,5 +3,4 @@ project(CS-344_smallsh C)
 
 set(CMAKE_C_STANDARD "-std=c99 -Wall -Wextra -Werror -pedantic -g")
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(./src)

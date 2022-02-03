@@ -1,24 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define MAX_CHAR_LEN 2048;
-#define MAX_ARGS 512;
+#define MAX_CHAR_LEN 2048
+#define MAX_ARGS 512
 
 // A struct to hold commands, args, special symbols, and file names parsed from a user's input
-struct new_command{
+struct new_command {
     char *cmd;
+    char *stdin;
+    char *stdout;
     int in_redir;
     int out_redir;
     int bg_proc;
 };
 
 /**
- * Take a pointer to a line as its parameter.
+ * Takes a pointer to a line as its parameter.
  * @param line
  * @return a populated new_command struct
  */
 struct new_command *parse_line(char *line) {
-    struct new_command *cmd = malloc(sizeof(struct new_command));
+    int i = 0;
+    char *words[MAX_ARGS];
+
+    // Initiate an array which can contain a maximum of 512 args, using strtok with a delimiter of " ", parse the input
+    // line and store each token in the array.
+    char *token = strtok(line, " ");
+    while (token != NULL) {
+        words[i] = calloc(strlen(token) + 1, sizeof(char));
+        strcpy(words[i], token);
+        i++;
+        token = strtok(NULL, " ");
+    }
+
+    // Iterate through the array and generate the command struct. Words can be stored in the args array, if the special
+    // characters "<", ">", or "&" are present, the corresponding flag in the struct will be set to "1".
+    for (int j = 0; j < MAX_ARGS; j++) {
+
+    }
+
+    // Return a pointer to the struct which can be used to execute the command
 
 }
 
