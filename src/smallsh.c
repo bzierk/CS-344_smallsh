@@ -4,22 +4,69 @@
 struct new_command {
     int argc;
     char **argv;
-    char *stdin;
-    char *stdout;
+    char *in_path;
+    char *out_path;
     int in_redir;
     int out_redir;
     int bg_proc;
+    int comment;
 };
 
+/*
+ * Initialize a new_command struct so valgind stops telling me I'm using uninitialized values.
+ */
+void initialize_cmd(struct new_command *cmd) {
+    cmd->argc = 0;
+    cmd->argv = NULL;
+    cmd->in_path = NULL;
+    cmd->out_path = NULL;
+    cmd->in_redir = 0;
+    cmd->out_redir = 0;
+    cmd->bg_proc = 0;
+    cmd->comment = 0;
+}
+
+void clean_up_cmd(struct new_command **cmd) {
+    struct new_command* currCmd = *cmd;
+    for (int i = 0; i < currCmd->argc; i++) {
+        free(currCmd->argv[i]);
+    }
+    free(currCmd->in_path);
+    free(currCmd->out_path);
+
+    free(currCmd);
+}
+
+/*
+ * Used for debugging, prints the contents of a new_command struct
+ */
+void print_cmd_struct(struct new_command *cmd) {
+    printf("argc: %d\n", cmd->argc);
+    printf("argv: ");
+    for (int i = 0; i < cmd->argc; i++) {
+        printf("%s, ", cmd->argv[i]);
+    }
+    printf("\n");
+    printf("in_path: %s\n", cmd->in_path);
+    printf("out_path: %s\n", cmd->out_path);
+    printf("redirect in: %d\n", cmd->in_redir);
+    printf("redirect out: %d\n", cmd->out_redir);
+    printf("bg process: %d\n", cmd->bg_proc);
+}
+
 /**
- * Takes a pointer to a line as its parameter.
+ * Takes a pointer to a line as its parameter. The line is tokenized using " " as a delimiter and an array of tokens
+ * is created. The array of tokens is then parsed and split into a new_command struct
  * @param line
  * @return a populated new_command struct
  */
-void parse_line(char *line) {
+struct new_command *parse_line(char *line) {
     struct new_command *cmd = malloc(sizeof(struct new_command));
-    int i = 0;
-    char *words[MAX_ARGS];
+    int i = 0, j = 0, n = 0;
+    char *words[MAX_ARGS] = {NULL};
+    char **tmpPtr;
+
+    initialize_cmd(cmd);
 
     // Initiate an array which can contain a maximum of 512 args, using strtok with a delimiter of " ", parse the input
     // line and store each token in the array.
@@ -32,30 +79,74 @@ void parse_line(char *line) {
         token = strtok(NULL, " ");
     }
 
-    // Check the last element in the array of tokens for an ampersand. If the last element is an ampersand, set the
-    // background process flag so we know to execute this command in the background.
-    if (strcmp(words[i - 1], "&") == 0) {
-        cmd->bg_proc = 1;
-    } else {
-        cmd->bg_proc = 0;
-    }
-
-    printf("bc: %d", cmd->bg_proc);
-    // Store the number of arguments
-    cmd->argc = i;
-
-    // Initialize argv to hold "argc" number of pointers. Each of these pointers will be used to hold an inidividual
+    // Initialize argv to hold "i" number of pointers where i is the number of tokens in the user's input and could
+    // potentially be the maximum number of argv. Each of these pointers will be used to hold an individual
     // argument in the argv array
-    cmd->argv = malloc(cmd->argc * sizeof(char *));
+    cmd->argv = malloc(i * sizeof(char *));
 
     // Iterate through the array and generate the command struct. Words can be stored in the args array, if the special
     // characters "<", ">", or "&" are present, the corresponding flag in the struct will be set to "1".
-    for (int j = 0; j < i; j++) {
-        printf("%s,", words[j]);
-        fflush(stdout);
+    while (words[j] != NULL) {
+
+        // Check if the current token is the input redirect symbol. If it matches, set the input redirect flag and
+        // store the next token as the path for input redirection
+        if (strcmp(words[j], "<") == 0) {
+            cmd->in_redir = 1;
+            cmd->in_path = calloc(strlen(words[j + 1]) + 1, sizeof(char));
+            strcpy(cmd->in_path, words[j + 1]);
+            j++;
+        }
+
+        // Check if the current token is the output redirect symbol. If it matches, set the output redirect flag and
+        // store the next token as the path for output redirection
+        else if (strcmp(words[j], ">") == 0) {
+            cmd->out_redir = 1;
+            cmd->out_path = calloc(strlen(words[j + 1]) + 1, sizeof(char));
+            strcpy(cmd->out_path, words[j + 1]);
+            j++;
+        }
+
+        // Check if the current token is the background process symbol. If it matches and the next token is "NULL", this
+        // is the last argument, set the background process flag
+        else if (strcmp(words[j], "&") == 0) {
+            if (words[j + 1] == NULL) {
+                cmd->bg_proc = 1;
+            }
+        }
+
+        // At this point, the token is not an input/output/bg flag, so it must be an argument, allocate space for the
+        // token and append it to argv.
+        else {
+            cmd->argv[n] = calloc(strlen(words[j]) + 1, sizeof(char));
+            strcpy(cmd->argv[n], words[j]);
+            n++;
+        }
+
+        j++;
     }
 
+    // Store the number of arguments
+    cmd->argc = n;
+
+    // If the first token in the array is a hash symbol, set a comment flag so the shell knows to skip the line
+    if (cmd->argc > 0) {
+        if (strcmp(cmd->argv[0], "#") == 0) {
+            cmd->comment = 1;
+        }
+    }
+
+    // Reallocate argv to remove any unnecessary "NULL" members of the array. Use tmpPtr to hold new array pointer
+    // in case realloc fails. On failure, realloc would return NULL and the pointer to cmd->argv would be lost,
+    // creating a memory leak.
+    tmpPtr = realloc(cmd->argv, cmd->argc * sizeof(char *));
+    cmd->argv = tmpPtr;
+
+    for (j = 0; j < i; j++) {
+        free(words[j]);
+    }
+    free(tmpPtr);
     // Return a pointer to the struct which can be used to execute the command
+    return cmd;
 }
 
 /**
@@ -77,10 +168,19 @@ char *get_line(void) {
 }
 
 int execute_command(struct new_command *cmd) {
+    if (cmd->argc ==  0) {
+        return 1;
+    }
 
+    if (cmd->comment == 1) {
+        return 2;
+    }
+    print_cmd_struct(cmd);
+    return 1;
 }
 
 void run_shell(void) {
+    struct new_command *cmd;
     char *currLine = NULL;
     int running = 1;
 
@@ -91,11 +191,14 @@ void run_shell(void) {
         currLine = get_line();
         printf("You entered: %s\n", currLine);
         fflush(stdout);
-//        struct new_command *cmd = parse_line(currLine);
-        parse_line(currLine);
+        cmd = parse_line(currLine);
 
-//        running = execute_command(cmd);
-        exit(EXIT_SUCCESS);
+        running = execute_command(cmd);
+        // clean up
+        free(currLine);
+        clean_up_cmd(&cmd);
+
+//        exit(EXIT_SUCCESS);
     }
 
     exit(EXIT_SUCCESS);
