@@ -29,12 +29,18 @@ void initialize_cmd(struct new_command *cmd) {
 void clean_up_cmd(struct new_command **cmd) {
     struct new_command* currCmd = *cmd;
     for (int i = 0; i < currCmd->argc; i++) {
-        free(currCmd->argv[i]);
+        if (currCmd->argv[i] != NULL) {
+            free(currCmd->argv[i]);
+        }
     }
-    free(currCmd->in_path);
-    free(currCmd->out_path);
+    if (currCmd->in_path != NULL) {
+        free(currCmd->in_path);
+    }
+    if (currCmd->out_path != NULL) {
+        free(currCmd->out_path);
+    }
 
-    free(currCmd);
+//    free(currCmd);
 }
 
 /*
@@ -54,6 +60,28 @@ void print_cmd_struct(struct new_command *cmd) {
     printf("bg process: %d\n", cmd->bg_proc);
 }
 
+void expand_dollar_signs(char *word) {
+    int pid_int;
+    char pid_str[8] = {0}; // Default max pid for 64 bit is 4194304, so we must hold 7 + 1 characters to hold null term
+    char *temp_str[2048]; // Temp array to hold max length arg
+    char *temp_ptr;
+    int i = 0;
+
+    pid_int = getpid();
+    sprintf(pid_str, "%d", pid_int);
+
+    if (strstr(word, "$$") != NULL) {
+        while (strstr(word, "$$") != NULL) {
+            temp_ptr = strstr(word, "$$");
+
+            memcpy(temp_str[i], )
+
+        }
+
+        strcpy(word, temp_str);
+    }
+}
+
 /**
  * Takes a pointer to a line as its parameter. The line is tokenized using " " as a delimiter and an array of tokens
  * is created. The array of tokens is then parsed and split into a new_command struct
@@ -64,7 +92,7 @@ struct new_command *parse_line(char *line) {
     struct new_command *cmd = malloc(sizeof(struct new_command));
     int i = 0, j = 0, n = 0;
     char *words[MAX_ARGS] = {NULL};
-    char **tmpPtr;
+    char **tmpPtr = {NULL};
 
     initialize_cmd(cmd);
 
@@ -73,6 +101,7 @@ struct new_command *parse_line(char *line) {
     char *strip_newline_token = strtok(line, "\n");
     char *token = strtok(strip_newline_token, " ");
     while (token != NULL) {
+        expand_dollar_signs(token);
         words[i] = calloc(strlen(token) + 1, sizeof(char));
         strcpy(words[i], token);
         i++;
@@ -144,7 +173,7 @@ struct new_command *parse_line(char *line) {
     for (j = 0; j < i; j++) {
         free(words[j]);
     }
-    free(tmpPtr);
+
     // Return a pointer to the struct which can be used to execute the command
     return cmd;
 }
