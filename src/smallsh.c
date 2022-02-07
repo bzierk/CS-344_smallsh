@@ -1,5 +1,7 @@
 #include "smallsh.h"
 
+int proc_status = 0;
+
 // A struct to hold commands, args, special symbols, and file names parsed from a user's input
 struct new_command {
     int argc;
@@ -28,10 +30,10 @@ void initialize_cmd(struct new_command *cmd) {
 
 void clean_up_cmd(struct new_command **cmd) {
     struct new_command* currCmd = *cmd;
-    for (int i = 0; i < currCmd->argc; i++) {
-        if (currCmd->argv[i] != NULL) {
+    for (int i = 0; i < (currCmd->argc + 1); i++) {
+//        if (currCmd->argv[i] != NULL) {
             free(currCmd->argv[i]);
-        }
+//        }
     }
     if (currCmd->in_path != NULL) {
         free(currCmd->in_path);
@@ -49,7 +51,7 @@ void clean_up_cmd(struct new_command **cmd) {
 void print_cmd_struct(struct new_command *cmd) {
     printf("argc: %d\n", cmd->argc);
     printf("argv: ");
-    for (int i = 0; i < cmd->argc; i++) {
+    for (int i = 0; i < (cmd->argc + 1); i++) {
         printf("%s, ", cmd->argv[i]);
     }
     printf("\n");
@@ -60,25 +62,42 @@ void print_cmd_struct(struct new_command *cmd) {
     printf("bg process: %d\n", cmd->bg_proc);
 }
 
-void expand_dollar_signs(char *word) {
+void expand_dollar_signs(char **word) {
     int pid_int;
     char pid_str[8] = {0}; // Default max pid for 64 bit is 4194304, so we must hold 7 + 1 characters to hold null term
-    char *temp_str[2048]; // Temp array to hold max length arg
-    char *temp_ptr;
-    int i = 0;
+    char temp_str[2048] = {0}; // Temp array to hold max length arg
+    char *temp_ptr = &temp_str[0];
+    char *word_ptr = *word;
 
     pid_int = getpid();
     sprintf(pid_str, "%d", pid_int);
 
-    if (strstr(word, "$$") != NULL) {
-        while (strstr(word, "$$") != NULL) {
-            temp_ptr = strstr(word, "$$");
-
-            memcpy(temp_str[i], )
-
+    if (strstr(*word, "$$") != NULL) {
+        while (*word_ptr != '\0') {
+            if (*word_ptr == '$') {
+                if (*(word_ptr + 1) != '\0') {
+                    if (*(word_ptr + 1) == '$') {
+                        memcpy(temp_ptr, pid_str, strlen(pid_str));
+                        word_ptr = word_ptr + 2;
+                        temp_ptr = temp_ptr + strlen(pid_str);
+                    } else {
+                        *temp_ptr = *word_ptr;
+                        temp_ptr++;
+                        word_ptr++;
+                    }
+                } else {
+                    *temp_ptr = *word_ptr;
+                    temp_ptr++;
+                    word_ptr++;
+                }
+            } else {
+                *temp_ptr = *word_ptr;
+                word_ptr++;
+                temp_ptr++;
+            }
         }
-
-        strcpy(word, temp_str);
+        *word = malloc(strlen(temp_str) * sizeof(char) + 1);
+        strcpy(*word, temp_str);
     }
 }
 
@@ -101,7 +120,7 @@ struct new_command *parse_line(char *line) {
     char *strip_newline_token = strtok(line, "\n");
     char *token = strtok(strip_newline_token, " ");
     while (token != NULL) {
-        expand_dollar_signs(token);
+        expand_dollar_signs(&token);
         words[i] = calloc(strlen(token) + 1, sizeof(char));
         strcpy(words[i], token);
         i++;
@@ -159,7 +178,7 @@ struct new_command *parse_line(char *line) {
 
     // If the first token in the array is a hash symbol, set a comment flag so the shell knows to skip the line
     if (cmd->argc > 0) {
-        if (strcmp(cmd->argv[0], "#") == 0) {
+        if (strncmp(cmd->argv[0], "#", 1) == 0) {
             cmd->comment = 1;
         }
     }
@@ -167,8 +186,10 @@ struct new_command *parse_line(char *line) {
     // Reallocate argv to remove any unnecessary "NULL" members of the array. Use tmpPtr to hold new array pointer
     // in case realloc fails. On failure, realloc would return NULL and the pointer to cmd->argv would be lost,
     // creating a memory leak.
-    tmpPtr = realloc(cmd->argv, cmd->argc * sizeof(char *));
+    tmpPtr = realloc(cmd->argv, (cmd->argc + 1) * sizeof(char *));
     cmd->argv = tmpPtr;
+
+    cmd->argv[cmd->argc] = NULL;
 
     for (j = 0; j < i; j++) {
         free(words[j]);
@@ -196,15 +217,158 @@ char *get_line(void) {
     return currLine;
 }
 
+int route_output(struct new_command *cmd) {
+    int out_fd = 0;
+    if (cmd->out_redir == 1) {
+        out_fd = open(cmd->out_path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
+        if (out_fd == -1) {
+            printf("Cannot open %s for output.", cmd->out_path);
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+        if (dup2(out_fd, STDOUT_FILENO) == -1) {
+            printf("dup2 error: %s", strerror(errno));
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+    }
+    return out_fd;
+}
+
+int route_input(struct new_command *cmd) {
+    int in_fd = 0;
+    if (cmd->in_redir == 1) {
+        in_fd = open(cmd->in_path, O_RDONLY);
+        if (in_fd == -1) {
+            printf("Cannot open %s for input.", cmd->in_path);
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+        if (dup2(in_fd, STDIN_FILENO) == -1) {
+            printf("dup2 error: %s", strerror(errno));
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+    }
+    return in_fd;
+}
+
+int exec_fg_cmd(struct new_command *cmd) {
+    int childStatus;
+    int in_file;
+    int out_file;
+    pid_t spawnPid = fork();
+
+    switch(spawnPid) {
+        case -1:
+            perror("Fork failed\n");
+            fflush(stdout);
+            break;
+        case 0:
+            in_file = route_input(cmd);
+            out_file = route_output(cmd);
+            execvp(cmd->argv[0], cmd->argv);
+            perror(cmd->argv[0]);
+            _exit(EXIT_FAILURE);
+        default:
+            spawnPid = waitpid(spawnPid, &childStatus, 0);
+            if (WIFEXITED(childStatus) != 0) {
+                proc_status = WEXITSTATUS(childStatus);
+            }
+            break;
+    }
+    return 1;
+}
+
+int exec_bg_cmd(struct new_command *cmd) {
+    int childStatus;
+    int in_file;
+    int out_file;
+    pid_t spawnPid = fork();
+
+    switch(spawnPid) {
+        case -1:
+            perror("Fork failed\n");
+            fflush(stdout);
+            break;
+        case 0:
+            in_file = route_input(cmd);
+            out_file = route_output(cmd);
+            execvp(cmd->argv[0], cmd->argv);
+            perror(cmd->argv[0]);
+            _exit(EXIT_FAILURE);
+        default:
+            spawnPid = waitpid(spawnPid, &childStatus, 0);
+            if (WIFEXITED(childStatus) != 0) {
+                proc_status = WEXITSTATUS(childStatus);
+            }
+            break;
+    }
+    return 1;
+}
+
+/**
+ * Takes a new_command struct as a parameter. Attempt to match argv[0] to one of the built in commands (cd, exit,
+ * status), if argv[0] does not match to any of these commands, passes the command to a helper which will attempt
+ * to run one of the linux commands.
+ *
+ * If the user calls the exit function, execute_command returns 0 which will begin exiting the shell, all other
+ * commands will return 1 and continue to loop the shell.
+ *
+ * @param cmd - struct new_command
+ */
 int execute_command(struct new_command *cmd) {
+    // If a line is blank, do nothing
     if (cmd->argc ==  0) {
         return 1;
     }
-
-    if (cmd->comment == 1) {
-        return 2;
+    // If the first character of a line is '#', this line is a comment, do nothing
+    else if (cmd->comment == 1) {
+        return 1;
     }
-    print_cmd_struct(cmd);
+    // If argv[0] matches "exit", return 0 and begin exiting the shell
+    else if (strcmp(cmd->argv[0], "exit") == 0) {
+        return 0;
+    }
+    // If argv[0] matches "cd", if argc is 1, move to the HOME directory, otherwise move to the path specified in
+    // argv[1]
+    else if (strcmp(cmd->argv[0], "cd") == 0) {
+        if (cmd->argc > 2) {
+            printf("Too many arguments.\n");
+            fflush(stdout);
+        }
+        else if (cmd->argc == 1) {
+            if (chdir(getenv("HOME")) == -1) {
+                printf("File: %s\n Errno: %s", getcwd(NULL, 0), strerror(errno));
+                fflush(stdout);
+            }
+        } else {
+            if (chdir(cmd->argv[1]) == -1) {
+                printf( "File: %s\n Errno: %s", cmd->argv[2], strerror(errno));
+                fflush(stdout);
+            }
+        }
+        printf("Cwd: %s\n", getcwd(NULL, 0));
+        fflush(stdout);
+        return 1;
+    }
+    // If argv[1] matches "status", display the exit status or the terminating signal of the last foreground
+    // process run by the shell
+    else if (strcmp(cmd->argv[0], "status") == 0) {
+        printf("Status: %d\n", proc_status);
+        fflush(stdout);
+        return 1;
+    }
+    // argv[0] does not match any of the built-in commands, pass the cmd struct to a helper function which attempts
+    // to run a native linux command
+    else {
+        if (cmd->bg_proc == 1) {
+            exec_bg_cmd(cmd);
+        } else {
+            exec_fg_cmd(cmd);
+        }
+    }
+
     return 1;
 }
 
@@ -218,8 +382,6 @@ void run_shell(void) {
         printf(": ");
         fflush(stdout);
         currLine = get_line();
-        printf("You entered: %s\n", currLine);
-        fflush(stdout);
         cmd = parse_line(currLine);
 
         running = execute_command(cmd);
@@ -227,8 +389,8 @@ void run_shell(void) {
         free(currLine);
         clean_up_cmd(&cmd);
 
-//        exit(EXIT_SUCCESS);
     }
+    // Kill bg processes
 
     exit(EXIT_SUCCESS);
 }

@@ -6,9 +6,12 @@
 #define CS_344_SMALLSH_SMALLSH_H
 
 #define _GNU_SOURCE
+#include <fcntl.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define MAX_CHAR_LEN 2048
