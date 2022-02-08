@@ -1,8 +1,10 @@
 cmake-build-debug
 cmake-build-debug-remote-host
 CMakeLists.txt
+example.txt
 include
 junk
+junk2
 p3testscript
 smallsh
 src

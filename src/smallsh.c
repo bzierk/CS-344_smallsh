@@ -232,7 +232,7 @@ int route_output(struct new_command *cmd) {
             fflush(stdout);
             exit(EXIT_FAILURE);
         }
-    } else if (cmd->bg_proc == 1) {
+    } else if (cmd->bg_proc == 1 && bg_enabled == 1) {
         out_fd = open("/dev/null", O_WRONLY);
         if (out_fd == -1) {
             printf("Cannot open /dev/null for input\n");
@@ -262,7 +262,7 @@ int route_input(struct new_command *cmd) {
             fflush(stdout);
             exit(EXIT_FAILURE);
         }
-    } else if (cmd->bg_proc == 1) {
+    } else if (cmd->bg_proc == 1 && bg_enabled == 1) {
         in_fd = open("/dev/null", O_RDONLY);
         if (in_fd == -1) {
             printf("Cannot open /dev/null for input");
@@ -301,6 +301,9 @@ int exec_fg_cmd(struct new_command *cmd) {
         case 0:
             // Child case - route input/output, attempt to execute by calling execvp, on failure, display error
             // message, clean up open fd/pid and exit
+
+            // Restores signal actions to default for foreground child processes allowing child process to be
+            // interrupted with Ctrl + C
             SIGINT_action.sa_handler = SIG_DFL;
             SIGINT_action.sa_flags = 0;
             sigaction(SIGINT, &SIGINT_action, NULL);
@@ -352,9 +355,8 @@ int exec_bg_cmd(struct new_command *cmd, struct node **head) {
             perror(cmd->argv[0]);
             _exit(EXIT_FAILURE);
         default:
-            printf("Adding node: %d\n", spawnPid);
+            printf("Background pid is: %d", spawnPid);
             add_node(head, spawnPid);
-            display_list(head);
     }
     return 1;
 }
@@ -363,16 +365,13 @@ void zombie_apocalypse(struct node *head) {
     int bg_status;
     int exit_status;
     char str_exit_status[10];
+    char str_bg_pid[10];
 
     pid_t bg_pid = waitpid(-1, &bg_status, WNOHANG);
-    while (bg_pid != 0) {
+    while (bg_pid > 0) {
         if (bg_pid > 0) {
             fflush(stdout);
-            if (head != NULL) {
-                remove_node(&head, bg_pid);
-            }
-            printf("Removed node: \n");
-            display_list(&head);
+            remove_node(&head, bg_pid);
 
             if ((WIFEXITED(bg_status)) != 0) {
                 printf("Exited PID %d with code %d\n", bg_pid, WEXITSTATUS(bg_status));
@@ -380,7 +379,13 @@ void zombie_apocalypse(struct node *head) {
             } else if (WIFSIGNALED(bg_status)) {
                 exit_status = WTERMSIG(bg_status);
                 sprintf(str_exit_status, "%d", exit_status);
+                sprintf(str_bg_pid, "%d", bg_pid);
+                char *msg = "Background pid ";
+                char *end_msg = " is done: ";
                 char *message = "Terminated by signal ";
+                write(STDOUT_FILENO, msg, 15);
+                write(STDOUT_FILENO, str_bg_pid, 10);
+                write(STDOUT_FILENO, end_msg, 10);
                 write(STDOUT_FILENO, message, 21);
                 write(STDOUT_FILENO, str_exit_status, 2);
                 write(STDOUT_FILENO, "\n", 2);
@@ -444,7 +449,7 @@ int execute_command(struct new_command *cmd, struct node **head) {
     // argv[0] does not match any of the built-in commands, pass the cmd struct to a helper function which attempts
     // to run a native linux command
     else {
-        if (cmd->bg_proc == 1) {
+        if (cmd->bg_proc == 1 && bg_enabled == 1) {
             fflush(stdout);
             exec_bg_cmd(cmd, head);
         } else {
@@ -456,7 +461,7 @@ int execute_command(struct new_command *cmd, struct node **head) {
     return 1;
 }
 
-void disable_bg_mode() {
+void disable_bg_mode(int signo) {
     if (bg_enabled == 1) {
         char *message = "Entering foreground-only mode (& is now ignored\n";
         write(STDOUT_FILENO, message, 50);
@@ -472,26 +477,35 @@ void run_shell(void) {
     struct new_command *cmd;
     struct node *head = NULL;
     struct sigaction SIGINT_action = {0};
-    struct sigaction SIGSTP_action = {0};
+    struct sigaction SIGTSTP_action = {0};
     char *currLine = NULL;
     int running = 1;
 
-    //
+    // Ignores Ctrl + C (SIGINT) for all functions
+    // Adapted from explorations
     SIGINT_action.sa_handler = SIG_IGN;
     SIGINT_action.sa_flags = 0;
     sigaction(SIGINT, &SIGINT_action, NULL);
 
+    // Catches Ctrl + Z (SIGSTP) for all functions
+    // Upon catching, toggles background mode which forces all commands to be executed in the foreground
+    // Ignores any trailing "&"
+    SIGTSTP_action.sa_handler = disable_bg_mode;
+    sigfillset(&SIGTSTP_action.sa_mask);
+    SIGTSTP_action.sa_flags = SA_RESTART;
+    sigaction(SIGTSTP, &SIGTSTP_action, NULL);
+
     // Display command line prompt so user knows the shell is awaiting input
     while(running != 0) {
-        if (head != NULL) {
-            zombie_apocalypse(head);
-        }
         printf(": ");
         fflush(stdout);
         currLine = get_line();
         cmd = parse_line(currLine);
 
         running = execute_command(cmd, &head);
+        if (head != NULL) {
+            zombie_apocalypse(head);
+        }
         // clean up
         free(currLine);
         clean_up_cmd(&cmd);
