@@ -1,6 +1,7 @@
 #include "smallsh.h"
 
 int proc_status = 0;
+int bg_enabled = 1;
 
 // A struct to hold commands, args, special symbols, and file names parsed from a user's input
 struct new_command {
@@ -289,6 +290,8 @@ int route_input(struct new_command *cmd) {
 int exec_fg_cmd(struct new_command *cmd) {
     int childStatus;
     pid_t spawnPid = fork();
+    struct sigaction SIGINT_action = {0};
+    char str_proc_status[10];
 
     switch(spawnPid) {
         case -1:
@@ -298,6 +301,10 @@ int exec_fg_cmd(struct new_command *cmd) {
         case 0:
             // Child case - route input/output, attempt to execute by calling execvp, on failure, display error
             // message, clean up open fd/pid and exit
+            SIGINT_action.sa_handler = SIG_DFL;
+            SIGINT_action.sa_flags = 0;
+            sigaction(SIGINT, &SIGINT_action, NULL);
+
             route_input(cmd);
             route_output(cmd);
             execvp(cmd->argv[0], cmd->argv);
@@ -311,6 +318,11 @@ int exec_fg_cmd(struct new_command *cmd) {
                 proc_status = WEXITSTATUS(childStatus);
             } else if (WIFSIGNALED(childStatus) != 0) {
                 proc_status = WTERMSIG(childStatus);
+                sprintf(str_proc_status, "%d", proc_status);
+                char *message = "Terminated by signal ";
+                write(STDOUT_FILENO, message, 21);
+                write(STDOUT_FILENO, str_proc_status, 2);
+                write(STDOUT_FILENO, "\n", 2);
             }
             break;
     }
@@ -349,26 +361,34 @@ int exec_bg_cmd(struct new_command *cmd, struct node **head) {
 
 void zombie_apocalypse(struct node *head) {
     int bg_status;
+    int exit_status;
+    char str_exit_status[10];
 
-    for (struct node *curr_node = head; curr_node != NULL; curr_node = curr_node->next) {
-        pid_t bg_pid = waitpid(-1, &bg_status, WNOHANG);
+    pid_t bg_pid = waitpid(-1, &bg_status, WNOHANG);
+    while (bg_pid != 0) {
         if (bg_pid > 0) {
             fflush(stdout);
             if (head != NULL) {
                 remove_node(&head, bg_pid);
             }
+            printf("Removed node: \n");
             display_list(&head);
 
             if ((WIFEXITED(bg_status)) != 0) {
                 printf("Exited PID %d with code %d\n", bg_pid, WEXITSTATUS(bg_status));
                 fflush(stdout);
             } else if (WIFSIGNALED(bg_status)) {
-                printf("PID %d terminated by signal %d\n", bg_pid, WTERMSIG(bg_status));
-                fflush(stdout);
+                exit_status = WTERMSIG(bg_status);
+                sprintf(str_exit_status, "%d", exit_status);
+                char *message = "Terminated by signal ";
+                write(STDOUT_FILENO, message, 21);
+                write(STDOUT_FILENO, str_exit_status, 2);
+                write(STDOUT_FILENO, "\n", 2);
             }
         }
-
+        bg_pid = waitpid(-1, &bg_status, WNOHANG);
     }
+
 }
 
 /**
@@ -436,11 +456,30 @@ int execute_command(struct new_command *cmd, struct node **head) {
     return 1;
 }
 
+void disable_bg_mode() {
+    if (bg_enabled == 1) {
+        char *message = "Entering foreground-only mode (& is now ignored\n";
+        write(STDOUT_FILENO, message, 50);
+        bg_enabled = 0;
+    } else {
+        char *message = "Exiting foreground-only mode\n";
+        write(STDOUT_FILENO, message, 30);
+        bg_enabled = 1;
+    }
+}
+
 void run_shell(void) {
     struct new_command *cmd;
     struct node *head = NULL;
+    struct sigaction SIGINT_action = {0};
+    struct sigaction SIGSTP_action = {0};
     char *currLine = NULL;
     int running = 1;
+
+    //
+    SIGINT_action.sa_handler = SIG_IGN;
+    SIGINT_action.sa_flags = 0;
+    sigaction(SIGINT, &SIGINT_action, NULL);
 
     // Display command line prompt so user knows the shell is awaiting input
     while(running != 0) {
