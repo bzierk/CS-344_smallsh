@@ -222,12 +222,24 @@ int route_output(struct new_command *cmd) {
     if (cmd->out_redir == 1) {
         out_fd = open(cmd->out_path, O_WRONLY | O_CREAT | O_TRUNC, 0640);
         if (out_fd == -1) {
-            printf("Cannot open %s for output.", cmd->out_path);
+            printf("Cannot open %s for output.\n", cmd->out_path);
             fflush(stdout);
             exit(EXIT_FAILURE);
         }
         if (dup2(out_fd, STDOUT_FILENO) == -1) {
-            printf("dup2 error: %s", strerror(errno));
+            printf("dup2 error: %s\n", strerror(errno));
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+    } else if (cmd->bg_proc == 1) {
+        out_fd = open("/dev/null", O_WRONLY);
+        if (out_fd == -1) {
+            printf("Cannot open /dev/null for input\n");
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+        if (dup2(out_fd, STDOUT_FILENO) == -1) {
+            printf("dup2 error: %s\n", strerror(errno));
             fflush(stdout);
             exit(EXIT_FAILURE);
         }
@@ -240,7 +252,19 @@ int route_input(struct new_command *cmd) {
     if (cmd->in_redir == 1) {
         in_fd = open(cmd->in_path, O_RDONLY);
         if (in_fd == -1) {
-            printf("Cannot open %s for input.", cmd->in_path);
+            printf("Cannot open %s for input.\n", cmd->in_path);
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+        if (dup2(in_fd, STDIN_FILENO) == -1) {
+            printf("dup2 error: %s", strerror(errno));
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+    } else if (cmd->bg_proc == 1) {
+        in_fd = open("/dev/null", O_RDONLY);
+        if (in_fd == -1) {
+            printf("Cannot open /dev/null for input");
             fflush(stdout);
             exit(EXIT_FAILURE);
         }
@@ -253,10 +277,17 @@ int route_input(struct new_command *cmd) {
     return in_fd;
 }
 
+/**
+ * Takes a new_command struct as a parameter and executes it in the foreground. Creates a child process by calling
+ * fork, the child process then handles routing input/output and attempts to execute the command held at argv[0] by
+ * passing it to execvp. Execvp was chosen for ease of finding functions in the PATH  variable (p) and due to the
+ * format of variables being held in cmd->argv (v).
+ *
+ * The parent process will wait for the child process to terminate before returning control to the user.
+ * @param cmd
+ */
 int exec_fg_cmd(struct new_command *cmd) {
     int childStatus;
-    int in_file;
-    int out_file;
     pid_t spawnPid = fork();
 
     switch(spawnPid) {
@@ -265,25 +296,36 @@ int exec_fg_cmd(struct new_command *cmd) {
             fflush(stdout);
             break;
         case 0:
-            in_file = route_input(cmd);
-            out_file = route_output(cmd);
+            // Child case - route input/output, attempt to execute by calling execvp, on failure, display error
+            // message, clean up open fd/pid and exit
+            route_input(cmd);
+            route_output(cmd);
             execvp(cmd->argv[0], cmd->argv);
             perror(cmd->argv[0]);
             _exit(EXIT_FAILURE);
         default:
+            // Parent case - Wait for child process to complete, upon completion of child process, store the
+            // exit status in proc_status
             spawnPid = waitpid(spawnPid, &childStatus, 0);
             if (WIFEXITED(childStatus) != 0) {
                 proc_status = WEXITSTATUS(childStatus);
+            } else if (WIFSIGNALED(childStatus) != 0) {
+                proc_status = WTERMSIG(childStatus);
             }
             break;
     }
     return 1;
 }
 
-int exec_bg_cmd(struct new_command *cmd) {
-    int childStatus;
-    int in_file;
-    int out_file;
+/**
+ * Takes a new_command struct as a parameter and executes it in the background. Creates a child process by calling
+ * fork, the child process then handles routing input/output and attempts to execute the command held at argv[0] by
+ * passing it to execvp. If the user does not specify input or output, they will default to dev/null.
+ *
+ * The parent process will print the PID of the child process and immediately return control to the user.
+ * @param cmd
+ */
+int exec_bg_cmd(struct new_command *cmd, struct node **head) {
     pid_t spawnPid = fork();
 
     switch(spawnPid) {
@@ -292,19 +334,41 @@ int exec_bg_cmd(struct new_command *cmd) {
             fflush(stdout);
             break;
         case 0:
-            in_file = route_input(cmd);
-            out_file = route_output(cmd);
+            route_input(cmd);
+            route_output(cmd);
             execvp(cmd->argv[0], cmd->argv);
             perror(cmd->argv[0]);
             _exit(EXIT_FAILURE);
         default:
-            spawnPid = waitpid(spawnPid, &childStatus, 0);
-            if (WIFEXITED(childStatus) != 0) {
-                proc_status = WEXITSTATUS(childStatus);
-            }
-            break;
+            printf("Adding node: %d\n", spawnPid);
+            add_node(head, spawnPid);
+            display_list(head);
     }
     return 1;
+}
+
+void zombie_apocalypse(struct node *head) {
+    int bg_status;
+
+    for (struct node *curr_node = head; curr_node != NULL; curr_node = curr_node->next) {
+        pid_t bg_pid = waitpid(-1, &bg_status, WNOHANG);
+        if (bg_pid > 0) {
+            fflush(stdout);
+            if (head != NULL) {
+                remove_node(&head, bg_pid);
+            }
+            display_list(&head);
+
+            if ((WIFEXITED(bg_status)) != 0) {
+                printf("Exited PID %d with code %d\n", bg_pid, WEXITSTATUS(bg_status));
+                fflush(stdout);
+            } else if (WIFSIGNALED(bg_status)) {
+                printf("PID %d terminated by signal %d\n", bg_pid, WTERMSIG(bg_status));
+                fflush(stdout);
+            }
+        }
+
+    }
 }
 
 /**
@@ -317,7 +381,7 @@ int exec_bg_cmd(struct new_command *cmd) {
  *
  * @param cmd - struct new_command
  */
-int execute_command(struct new_command *cmd) {
+int execute_command(struct new_command *cmd, struct node **head) {
     // If a line is blank, do nothing
     if (cmd->argc ==  0) {
         return 1;
@@ -348,8 +412,6 @@ int execute_command(struct new_command *cmd) {
                 fflush(stdout);
             }
         }
-        printf("Cwd: %s\n", getcwd(NULL, 0));
-        fflush(stdout);
         return 1;
     }
     // If argv[1] matches "status", display the exit status or the terminating signal of the last foreground
@@ -363,8 +425,10 @@ int execute_command(struct new_command *cmd) {
     // to run a native linux command
     else {
         if (cmd->bg_proc == 1) {
-            exec_bg_cmd(cmd);
+            fflush(stdout);
+            exec_bg_cmd(cmd, head);
         } else {
+            fflush(stdout);
             exec_fg_cmd(cmd);
         }
     }
@@ -374,23 +438,29 @@ int execute_command(struct new_command *cmd) {
 
 void run_shell(void) {
     struct new_command *cmd;
+    struct node *head = NULL;
     char *currLine = NULL;
     int running = 1;
 
     // Display command line prompt so user knows the shell is awaiting input
     while(running != 0) {
+        if (head != NULL) {
+            zombie_apocalypse(head);
+        }
         printf(": ");
         fflush(stdout);
         currLine = get_line();
         cmd = parse_line(currLine);
 
-        running = execute_command(cmd);
+        running = execute_command(cmd, &head);
         // clean up
         free(currLine);
         clean_up_cmd(&cmd);
 
     }
     // Kill bg processes
+    // Free the list of bg_pid
+    free_list(&head);
 
     exit(EXIT_SUCCESS);
 }

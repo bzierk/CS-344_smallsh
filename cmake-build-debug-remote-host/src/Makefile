@@ -42,10 +42,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /tmp/tmp.fHkVTObMdv
+CMAKE_SOURCE_DIR = /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host
+CMAKE_BINARY_DIR = /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,14 +72,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/CMakeFiles /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/CMakeFiles/progress.marks
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/CMakeFiles 0
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -E cmake_progress_start /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/CMakeFiles/progress.marks
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/clean
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/clean
 .PHONY : clean
 
 # The main clean target
@@ -88,22 +88,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/CMakeFiles/smallsh.dir/rule:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/smallsh.dir/rule
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/smallsh.dir/rule
 .PHONY : src/CMakeFiles/smallsh.dir/rule
 
 # Convenience name for target.
@@ -112,15 +112,39 @@ smallsh: src/CMakeFiles/smallsh.dir/rule
 
 # fast build rule for target.
 smallsh/fast:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/build
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/build
 .PHONY : smallsh/fast
+
+node.o: node.c.o
+.PHONY : node.o
+
+# target to build an object file
+node.c.o:
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/node.c.o
+.PHONY : node.c.o
+
+node.i: node.c.i
+.PHONY : node.i
+
+# target to preprocess a source file
+node.c.i:
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/node.c.i
+.PHONY : node.c.i
+
+node.s: node.c.s
+.PHONY : node.s
+
+# target to generate assembly for a file
+node.c.s:
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/node.c.s
+.PHONY : node.c.s
 
 smallsh.o: smallsh.c.o
 .PHONY : smallsh.o
 
 # target to build an object file
 smallsh.c.o:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/smallsh.c.o
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/smallsh.c.o
 .PHONY : smallsh.c.o
 
 smallsh.i: smallsh.c.i
@@ -128,7 +152,7 @@ smallsh.i: smallsh.c.i
 
 # target to preprocess a source file
 smallsh.c.i:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/smallsh.c.i
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/smallsh.c.i
 .PHONY : smallsh.c.i
 
 smallsh.s: smallsh.c.s
@@ -136,7 +160,7 @@ smallsh.s: smallsh.c.s
 
 # target to generate assembly for a file
 smallsh.c.s:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/smallsh.c.s
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/smallsh.c.s
 .PHONY : smallsh.c.s
 
 # Help Target
@@ -148,6 +172,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... smallsh"
+	@echo "... node.o"
+	@echo "... node.i"
+	@echo "... node.s"
 	@echo "... smallsh.o"
 	@echo "... smallsh.i"
 	@echo "... smallsh.s"
@@ -162,6 +189,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -8,70 +8,72 @@
       <Option virtualFolders="CMake Files\;CMake Files\src\;" />
       <Build>
       <Target title="all">
-         <Option working_dir="/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host" />
+         <Option working_dir="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 all" />
-            <CompileFile command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="rebuild_cache">
-         <Option working_dir="/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host" />
+         <Option working_dir="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 rebuild_cache" />
-            <CompileFile command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="smallsh">
-         <Option output="/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/smallsh" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src" />
+         <Option output="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/smallsh" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src" />
          <Option object_output="./" />
          <Option type="1" />
          <Option compiler="gcc" />
          <Compiler>
-            <Add directory="/tmp/tmp.fHkVTObMdv/include" />
+            <Add directory="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include" />
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 smallsh" />
-            <CompileFile command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 smallsh" />
+            <CompileFile command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="smallsh/fast">
-         <Option output="/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/smallsh" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src" />
+         <Option output="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/smallsh" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src" />
          <Option object_output="./" />
          <Option type="1" />
          <Option compiler="gcc" />
          <Compiler>
-            <Add directory="/tmp/tmp.fHkVTObMdv/include" />
+            <Add directory="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/include" />
             <Add directory="/usr/include" />
             <Add directory="/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include" />
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 smallsh/fast" />
-            <CompileFile command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/gmake -f &quot;/tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 smallsh/fast" />
+            <CompileFile command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/gmake -f &quot;/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       </Build>
-      <Unit filename="/tmp/tmp.fHkVTObMdv/src/smallsh.c">
+      <Unit filename="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/node.c">
       </Unit>
-      <Unit filename="/tmp/tmp.fHkVTObMdv/CMakeLists.txt">
+      <Unit filename="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/smallsh.c">
+      </Unit>
+      <Unit filename="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/CMakeLists.txt">
           <Option virtualFolder="CMake Files\" />
       </Unit>
-      <Unit filename="/tmp/tmp.fHkVTObMdv/src/CMakeLists.txt">
+      <Unit filename="/nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/CMakeLists.txt">
           <Option virtualFolder="CMake Files\src\" />
       </Unit>
    </Project>

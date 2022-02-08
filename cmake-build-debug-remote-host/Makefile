@@ -42,10 +42,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /tmp/tmp.fHkVTObMdv
+CMAKE_SOURCE_DIR = /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host
+CMAKE_BINARY_DIR = /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/CMakeFiles /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

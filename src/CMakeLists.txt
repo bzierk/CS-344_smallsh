@@ -1,1 +1,1 @@
-add_executable(smallsh smallsh.c)
+add_executable(smallsh smallsh.c node.c)

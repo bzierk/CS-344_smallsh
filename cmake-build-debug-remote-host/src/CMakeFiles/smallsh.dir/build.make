@@ -38,10 +38,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /tmp/tmp.fHkVTObMdv
+CMAKE_SOURCE_DIR = /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host
+CMAKE_BINARY_DIR = /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host
 
 # Include any dependencies generated for this target.
 include src/CMakeFiles/smallsh.dir/depend.make
@@ -54,17 +54,17 @@ include src/CMakeFiles/smallsh.dir/flags.make
 
 src/CMakeFiles/smallsh.dir/smallsh.c.o: src/CMakeFiles/smallsh.dir/flags.make
 src/CMakeFiles/smallsh.dir/smallsh.c.o: ../src/smallsh.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/smallsh.dir/smallsh.c.o"
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/smallsh.dir/smallsh.c.o   -c /tmp/tmp.fHkVTObMdv/src/smallsh.c
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/smallsh.dir/smallsh.c.o   -c /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/smallsh.c
 
 src/CMakeFiles/smallsh.dir/smallsh.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/smallsh.dir/smallsh.c.i"
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -E /tmp/tmp.fHkVTObMdv/src/smallsh.c > CMakeFiles/smallsh.dir/smallsh.c.i
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -E /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/smallsh.c > CMakeFiles/smallsh.dir/smallsh.c.i
 
 src/CMakeFiles/smallsh.dir/smallsh.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/smallsh.dir/smallsh.c.s"
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -S /tmp/tmp.fHkVTObMdv/src/smallsh.c -o CMakeFiles/smallsh.dir/smallsh.c.s
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -S /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/smallsh.c -o CMakeFiles/smallsh.dir/smallsh.c.s
 
 src/CMakeFiles/smallsh.dir/smallsh.c.o.requires:
 .PHONY : src/CMakeFiles/smallsh.dir/smallsh.c.o.requires
@@ -75,31 +75,57 @@ src/CMakeFiles/smallsh.dir/smallsh.c.o.provides: src/CMakeFiles/smallsh.dir/smal
 
 src/CMakeFiles/smallsh.dir/smallsh.c.o.provides.build: src/CMakeFiles/smallsh.dir/smallsh.c.o
 
+src/CMakeFiles/smallsh.dir/node.c.o: src/CMakeFiles/smallsh.dir/flags.make
+src/CMakeFiles/smallsh.dir/node.c.o: ../src/node.c
+	$(CMAKE_COMMAND) -E cmake_progress_report /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/CMakeFiles $(CMAKE_PROGRESS_2)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object src/CMakeFiles/smallsh.dir/node.c.o"
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/smallsh.dir/node.c.o   -c /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/node.c
+
+src/CMakeFiles/smallsh.dir/node.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/smallsh.dir/node.c.i"
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -E /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/node.c > CMakeFiles/smallsh.dir/node.c.i
+
+src/CMakeFiles/smallsh.dir/node.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/smallsh.dir/node.c.s"
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && /bin/cc  $(C_DEFINES) $(C_FLAGS) -S /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src/node.c -o CMakeFiles/smallsh.dir/node.c.s
+
+src/CMakeFiles/smallsh.dir/node.c.o.requires:
+.PHONY : src/CMakeFiles/smallsh.dir/node.c.o.requires
+
+src/CMakeFiles/smallsh.dir/node.c.o.provides: src/CMakeFiles/smallsh.dir/node.c.o.requires
+	$(MAKE) -f src/CMakeFiles/smallsh.dir/build.make src/CMakeFiles/smallsh.dir/node.c.o.provides.build
+.PHONY : src/CMakeFiles/smallsh.dir/node.c.o.provides
+
+src/CMakeFiles/smallsh.dir/node.c.o.provides.build: src/CMakeFiles/smallsh.dir/node.c.o
+
 # Object files for target smallsh
 smallsh_OBJECTS = \
-"CMakeFiles/smallsh.dir/smallsh.c.o"
+"CMakeFiles/smallsh.dir/smallsh.c.o" \
+"CMakeFiles/smallsh.dir/node.c.o"
 
 # External object files for target smallsh
 smallsh_EXTERNAL_OBJECTS =
 
 src/smallsh: src/CMakeFiles/smallsh.dir/smallsh.c.o
+src/smallsh: src/CMakeFiles/smallsh.dir/node.c.o
 src/smallsh: src/CMakeFiles/smallsh.dir/build.make
 src/smallsh: src/CMakeFiles/smallsh.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking C executable smallsh"
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/smallsh.dir/link.txt --verbose=$(VERBOSE)
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/smallsh.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 src/CMakeFiles/smallsh.dir/build: src/smallsh
 .PHONY : src/CMakeFiles/smallsh.dir/build
 
 src/CMakeFiles/smallsh.dir/requires: src/CMakeFiles/smallsh.dir/smallsh.c.o.requires
+src/CMakeFiles/smallsh.dir/requires: src/CMakeFiles/smallsh.dir/node.c.o.requires
 .PHONY : src/CMakeFiles/smallsh.dir/requires
 
 src/CMakeFiles/smallsh.dir/clean:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src && $(CMAKE_COMMAND) -P CMakeFiles/smallsh.dir/cmake_clean.cmake
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src && $(CMAKE_COMMAND) -P CMakeFiles/smallsh.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/smallsh.dir/clean
 
 src/CMakeFiles/smallsh.dir/depend:
-	cd /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /tmp/tmp.fHkVTObMdv /tmp/tmp.fHkVTObMdv/src /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src /tmp/tmp.fHkVTObMdv/cmake-build-debug-remote-host/src/CMakeFiles/smallsh.dir/DependInfo.cmake --color=$(COLOR)
+	cd /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/cmake-build-debug-remote-host/src/CMakeFiles/smallsh.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/smallsh.dir/depend
 

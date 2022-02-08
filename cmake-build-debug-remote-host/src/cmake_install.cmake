@@ -1,4 +1,4 @@
-# Install script for directory: /tmp/tmp.fHkVTObMdv/src
+# Install script for directory: /nfs/stak/users/zierkb/nfs/stak/users/zierkb/344/smallsh/src
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)

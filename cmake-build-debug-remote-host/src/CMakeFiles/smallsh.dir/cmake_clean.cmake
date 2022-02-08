@@ -1,5 +1,6 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/smallsh.dir/smallsh.c.o"
+  "CMakeFiles/smallsh.dir/node.c.o"
   "smallsh.pdb"
   "smallsh"
 )

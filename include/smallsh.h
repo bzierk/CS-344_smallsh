@@ -14,6 +14,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "node.h"
+
 #define MAX_CHAR_LEN 2048
 #define MAX_ARGS 512
 

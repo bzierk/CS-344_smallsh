@@ -1,1 +1,1 @@
-/bin/cc  -std=c99 -Wall -Wextra  -g -g    CMakeFiles/smallsh.dir/smallsh.c.o  -o smallsh -rdynamic 
+/bin/cc  -std=c99 -Wall -Wextra  -g -g    CMakeFiles/smallsh.dir/smallsh.c.o CMakeFiles/smallsh.dir/node.c.o  -o smallsh -rdynamic 
